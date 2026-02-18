@@ -1,5 +1,7 @@
 package questionTwo;
+
 import java.util.Scanner;
+
 /**
  * F28PA | Software Development A | Coursework
  * 
@@ -11,43 +13,39 @@ import java.util.Scanner;
  * Main program for the BookingSoft Cinema Ticket Booking System.
  *
  * Features:
- *   - Browse all available shows
- *   - Book MULTIPLE tickets per session (Additional Feature 1)
- *   - Visual seat map display showing [ ] or [X] for every seat (Additional Feature 2)
- *   - Three custom exceptions: InvalidSeatException, SeatAlreadyBookedException, VenueFullException
- *   - Comprehensive input validation for every user entry
- *   - Clear, friendly prompts and feedback at every step
+ * - Browse all available shows
+ * - Book MULTIPLE tickets per session (Additional Feature 1)
+ * - Visual seat map display showing [ ] or [X] for every seat (Additional
+ * Feature 2)
+ * - Three custom exceptions: InvalidSeatException, SeatAlreadyBookedException,
+ * VenueFullException
+ * - Comprehensive input validation for every user entry
+ * - Clear, friendly prompts and feedback at every step
  * 
  * @author RAJENDRAN KUMARASAMY
  */
 
 public class BookingSoft {
 
-    // ─── Shared Scanner ───────────────────────────────────────────────────────────
-    // Declared at class level (outside main) so all static methods can access it
-
-    /** Single shared Scanner so we never lose buffered input across method calls */
+    // Single shared Scanner to avoid issues with closing/reopening streams
     private static Scanner scanner = new Scanner(System.in);
-
-    // ─── Main Method ─────────────────────────────────────────────────────────────
 
     public static void main(String[] args) throws InterruptedException {
 
         // There are currently 6 shows offered in 6 different venues.
         Show[] shows = new Show[6];
 
-        // ── DO NOT CHANGE THE LINES BELOW ───────────────────────────────────────
-        shows[0] = new Show("1N", new Film("SING",            1));
-        shows[1] = new Show("2W", new Film("THE GRINCH",      2));
-        shows[2] = new Show("3E", new Film("BOSS BABY",       3));
-        shows[3] = new Show("3S", new Film("YES DAY",         3));
-        shows[4] = new Show("1E", new Film("THE KARATE KID",  1));
-        shows[5] = new Show("2N", new Film("THE SEA BEAST",   2));
+        shows[0] = new Show("1N", new Film("SING", 1));
+        shows[1] = new Show("2W", new Film("THE GRINCH", 2));
+        shows[2] = new Show("3E", new Film("BOSS BABY", 3));
+        shows[3] = new Show("3S", new Film("YES DAY", 3));
+        shows[4] = new Show("1E", new Film("THE KARATE KID", 1));
+        shows[5] = new Show("2N", new Film("THE SEA BEAST", 2));
 
         System.out.println("### Welcome to the Booking System ###\n");
         // ── DO NOT CHANGE THE ABOVE PART OF THE CODE ────────────────────────────
 
-        // ─── Application Main Loop ───────────────────────────────────────────────
+        // Application Main Loop
         boolean running = true;
 
         while (running) {
@@ -58,19 +56,19 @@ public class BookingSoft {
             switch (menuChoice) {
 
                 case 1:
-                    // ── Book ticket(s) – shows list + seat map inside the flow ──
+                    // Book ticket(s)
                     bookingFlow(shows);
                     pressEnterToContinue();
                     break;
 
                 case 2:
-                    // ── View all shows with their seat maps ─────────────────────
+                    // View all shows with their seat maps
                     viewAllAvailability(shows);
                     pressEnterToContinue();
                     break;
 
                 case 3:
-                    // ── Exit ────────────────────────────────────────────────────
+                    // Exit
                     System.out.println("\nThank you for using BookingSoft. Goodbye!");
                     running = false;
                     break;
@@ -84,36 +82,29 @@ public class BookingSoft {
         scanner.close();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // MENU & DISPLAY HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
+    /*
      * Prints the main menu options to the console.
      */
     private static void printMainMenu() {
         System.out.println();
-        System.out.println("╔══════════════════════════════════╗");
-        System.out.println("║         BOOKINGSOFT MENU         ║");
-        System.out.println("╠══════════════════════════════════╣");
-        System.out.println("║  1. Book ticket(s)               ║");
-        System.out.println("║  2. View all shows & seats       ║");
-        System.out.println("║  3. Exit                         ║");
-        System.out.println("╚══════════════════════════════════╝");
+        System.out.println("==================================");
+        System.out.println("|        BOOKINGSOFT MENU        |");
+        System.out.println("==================================");
+        System.out.println("|  1. Book ticket(s)             |");
+        System.out.println("|  2. View all shows & seats     |");
+        System.out.println("|  3. Exit                       |");
+        System.out.println("==================================");
     }
 
-    /**
+    /*
      * Displays seat availability summary AND visual seat map for every venue.
-     * Called from the main menu option 2, giving the user a full overview
-     * of all shows, their sessions, venues, and current seat status.
-     *
-     * @param shows The array of all Show objects
+     * Called from the main menu option 2.
      */
     private static void viewAllAvailability(Show[] shows) {
         System.out.println();
-        System.out.println("══════════════ SEAT AVAILABILITY FOR ALL VENUES ══════════════");
+        System.out.println("-------------- SEAT AVAILABILITY FOR ALL VENUES --------------");
         System.out.println("  Legend:  [ ] = Available      [X] = Booked / Occupied");
-        System.out.println("══════════════════════════════════════════════════════════════");
+        System.out.println("--------------------------------------------------------------");
 
         for (int i = 0; i < shows.length; i++) {
             System.out.println();
@@ -121,45 +112,40 @@ public class BookingSoft {
             shows[i].printAvailability();
             System.out.println();
             shows[i].printHall();
-            System.out.println("──────────────────────────────────────────────────────────────");
+            System.out.println("--------------------------------------------------------------");
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // BOOKING FLOW
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Guides the user through the entire booking process:
-     *   1. Choose a show
-     *   2. View the seat map for that show
-     *   3. Choose how many tickets to book
-     *   4. For each ticket, pick a seat (with full validation)
-     *   5. Confirm all bookings and show the updated seat map
-     *
-     * @param shows The array of all Show objects
+    /*
+     * Guides the user through the entire booking process.
+     * Steps:
+     * 1. Choose a show
+     * 2. View the seat map
+     * 3. Choose number of tickets
+     * 4. Pick seats (with validation)
+     * 5. Confirm bookings
      */
     private static void bookingFlow(Show[] shows) {
         System.out.println();
-        System.out.println("─────────────────── TICKET BOOKING ───────────────────");
+        System.out.println("------------------- TICKET BOOKING -------------------");
 
         // Step 1: Print the show list inline so user can pick a show
         System.out.println();
         System.out.println("  Available Shows:");
-        System.out.println("  ┌────┬───────────────────┬─────────────────┬───────┬────────────┐");
-        System.out.println("  │ #  │ Film              │ Session         │ Venue │ Available  │");
-        System.out.println("  ├────┼───────────────────┼─────────────────┼───────┼────────────┤");
+        System.out.println("  +----+-------------------+-----------------+-------+------------+");
+        System.out.println("  | #  | Film              | Session         | Venue | Available  |");
+        System.out.println("  +----+-------------------+-----------------+-------+------------+");
 
         for (int i = 0; i < shows.length; i++) {
-            Venue v     = shows[i].getVenue();
-            Film  f     = shows[i].getFilm();
-            int   avail = countAvailableSeats(shows[i]);
-            int   total = v.getNumOfSeats();
+            Venue v = shows[i].getVenue();
+            Film f = shows[i].getFilm();
+            int avail = countAvailableSeats(shows[i]);
+            int total = v.getNumOfSeats();
             String status = (avail == 0) ? "SOLD OUT" : (avail + "/" + total);
-            System.out.printf("  │ %-2d │ %-17s │ %-15s │ %-5s │ %-10s │%n",
+            System.out.printf("  | %-2d | %-17s | %-15s | %-5s | %-10s |%n",
                     (i + 1), f.getTitle(), f.getSession(), v.getID(), status);
         }
-        System.out.println("  └────┴───────────────────┴─────────────────┴───────┴────────────┘");
+        System.out.println("  +----+-------------------+-----------------+-------+------------+");
         System.out.println();
 
         // Step 2: Ask which show to book — 0 goes back to main menu
@@ -188,10 +174,10 @@ public class BookingSoft {
         selectedShow.printHall();
 
         // Step 5: Ask how many tickets to book — 0 goes back to show selection
-        Venue v       = selectedShow.getVenue();
-        int   rows    = v.getNoRows();
-        int   cols    = v.getNoCols();
-        int   maxCols = v.getNoCols();
+        Venue v = selectedShow.getVenue();
+        int rows = v.getNoRows();
+        int cols = v.getNoCols();
+        int maxCols = v.getNoCols();
 
         int remaining = countAvailableSeats(selectedShow);
         System.out.println("  How many tickets would you like to book?");
@@ -210,11 +196,12 @@ public class BookingSoft {
 
         for (int t = 1; t <= numTickets; t++) {
             System.out.println();
-            System.out.println("  ── Ticket " + t + " of " + numTickets + " ──");
+            System.out.println("  -- Ticket " + t + " of " + numTickets + " --");
 
             boolean ticketBooked = false;
 
-            // Keep asking until this particular ticket is successfully booked or user goes back
+            // Keep asking until this particular ticket is successfully booked or user goes
+            // back
             while (!ticketBooked) {
 
                 // Ask for row letter — '0' goes back to show list
@@ -271,12 +258,12 @@ public class BookingSoft {
 
         // Step 7: Booking session complete – print summary
         System.out.println();
-        System.out.println("══════════════════════════════════════════════");
+        System.out.println("----------------------------------------------");
         System.out.println("  Booking complete! " + successCount + " ticket(s) booked for:");
         System.out.println("    Film:    " + selectedShow.getFilm().getTitle());
         System.out.println("    Session: " + selectedShow.getFilm().getSession());
         System.out.println("    Venue:   " + selectedShow.getVenue().getID());
-        System.out.println("══════════════════════════════════════════════");
+        System.out.println("----------------------------------------------");
 
         // Show the final seat map for this venue after all bookings
         System.out.println();
@@ -300,30 +287,20 @@ public class BookingSoft {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // CONFIRMATION & PAUSE HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
+    /*
      * Asks the user to confirm a seat booking before it is finalised.
-     * Displays the seat reference, film name, session, and venue so the
-     * user can double-check before committing.
-     *
-     * @param row          The row letter chosen (e.g. 'B')
-     * @param seatNo       The seat number chosen (e.g. 3)
-     * @param selectedShow The show being booked
-     * @return true if the user confirms with 'Y', false otherwise
+     * Returns true if the user types 'Y', false otherwise.
      */
     private static boolean confirmBooking(char row, int seatNo, Show selectedShow) {
         System.out.println();
-        System.out.println("  ┌─────────────────────────────────────────┐");
-        System.out.println("  │           BOOKING CONFIRMATION          │");
-        System.out.println("  ├─────────────────────────────────────────┤");
-        System.out.println("  │  Seat    : " + row + seatNo);
-        System.out.println("  │  Film    : " + selectedShow.getFilm().getTitle());
-        System.out.println("  │  Session : " + selectedShow.getFilm().getSession());
-        System.out.println("  │  Venue   : " + selectedShow.getVenue().getID());
-        System.out.println("  └─────────────────────────────────────────┘");
+        System.out.println("  -------------------------------------------");
+        System.out.println("              BOOKING CONFIRMATION           ");
+        System.out.println("  -------------------------------------------");
+        System.out.println("     Seat    : " + row + seatNo);
+        System.out.println("     Film    : " + selectedShow.getFilm().getTitle());
+        System.out.println("     Session : " + selectedShow.getFilm().getSession());
+        System.out.println("     Venue   : " + selectedShow.getVenue().getID());
+        System.out.println("  -------------------------------------------");
         System.out.print("  Confirm this booking? (Y = Yes / N = No): ");
 
         String input = scanner.nextLine().trim().toUpperCase();
@@ -336,9 +313,8 @@ public class BookingSoft {
         }
     }
 
-    /**
-     * Pauses the program and waits for the user to press Enter before
-     * returning to the main menu. Prevents the screen from jumping too fast.
+    /*
+     * Pauses the program and waits for the user to press Enter.
      */
     private static void pressEnterToContinue() {
         System.out.println();
@@ -346,32 +322,21 @@ public class BookingSoft {
         scanner.nextLine();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // VALIDATION & CUSTOM EXCEPTION THROWERS
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
+    /*
      * Throws VenueFullException if the venue for the given show has no seats left.
-     *
-     * @param show The show to check
-     * @throws VenueFullException if every seat in the venue is occupied
      */
     private static void checkVenueNotFull(Show show) throws VenueFullException {
         if (show.getVenue().checkIfVenueIsFull()) {
             throw new VenueFullException(
                     "Sorry – " + show.getFilm().getTitle()
-                    + " at " + show.getVenue().getID()
-                    + " is completely SOLD OUT.");
+                            + " at " + show.getVenue().getID()
+                            + " is completely SOLD OUT.");
         }
     }
 
-    /**
+    /*
      * Throws InvalidSeatException if the given row letter is outside the
      * valid range for the show's venue.
-     *
-     * @param row     The row letter entered by the user (e.g. 'A', 'B')
-     * @param maxRows The number of rows in the venue
-     * @throws InvalidSeatException if the row is out of bounds
      */
     private static void validateRow(char row, int maxRows) throws InvalidSeatException {
         int rowIdx = Venue.rowLetter2Idx(row);
@@ -381,33 +346,24 @@ public class BookingSoft {
             char lastValidRow = Venue.rowIndex2Letter(maxRows - 1);
             throw new InvalidSeatException(
                     "Row '" + row + "' does not exist in this venue. "
-                    + "Valid rows are A to " + lastValidRow + ".");
+                            + "Valid rows are A to " + lastValidRow + ".");
         }
     }
 
-    /**
+    /*
      * Throws InvalidSeatException if the given seat number is outside the
      * valid column range for the show's venue.
-     *
-     * @param seatNo  The seat number entered by the user (1-based)
-     * @param maxCols The number of columns in the venue
-     * @throws InvalidSeatException if the seat number is out of bounds
      */
     private static void validateSeat(int seatNo, int maxCols) throws InvalidSeatException {
         if (seatNo < 1 || seatNo > maxCols) {
             throw new InvalidSeatException(
                     "Seat number " + seatNo + " does not exist in this venue. "
-                    + "Valid seat numbers are 1 to " + maxCols + ".");
+                            + "Valid seat numbers are 1 to " + maxCols + ".");
         }
     }
 
-    /**
+    /*
      * Throws SeatAlreadyBookedException if the specified seat is already occupied.
-     *
-     * @param show   The Show being booked
-     * @param row    The row letter
-     * @param seatNo The seat number (1-based)
-     * @throws SeatAlreadyBookedException if the seat is taken
      */
     private static void checkSeatAvailable(Show show, char row, int seatNo)
             throws SeatAlreadyBookedException {
@@ -417,29 +373,9 @@ public class BookingSoft {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // INPUT READING HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Reads an integer from the user that falls within [min, max] (inclusive).
-     * Keeps prompting until a valid integer in range is entered.
-     * Handles non-numeric input gracefully (catches NumberFormatException / InputMismatchException).
-     *
-     * @param prompt The message shown to the user
-     * @param min    The minimum acceptable value
-     * @param max    The maximum acceptable value
-     * @return A valid integer within the specified range
-     */
-    /**
+    /*
      * Reads an integer from the user within [min, max] (inclusive).
-     * Used for the main menu where 0 is not a valid back option.
      * Keeps prompting until a valid integer in range is entered.
-     *
-     * @param prompt The message shown to the user
-     * @param min    The minimum acceptable value
-     * @param max    The maximum acceptable value
-     * @return A valid integer within the specified range
      */
     private static int readIntInRange(String prompt, int min, int max) {
         int value = -1;
@@ -476,15 +412,9 @@ public class BookingSoft {
         return value;
     }
 
-    /**
+    /*
      * Reads an integer from the user within [min, max] OR 0 to go back.
-     * Used during the booking flow so the user can navigate backwards at any point.
-     * Returns 0 if the user wants to go back, otherwise returns the chosen value.
-     *
-     * @param prompt The message shown to the user (should mention "0 to go back")
-     * @param min    The minimum acceptable value (must be >= 1)
-     * @param max    The maximum acceptable value
-     * @return 0 if user chose to go back, otherwise a valid integer within [min, max]
+     * Returns 0 if the user wants to go back.
      */
     private static int readIntWithBack(String prompt, int min, int max) {
         int value = -1;
@@ -508,7 +438,7 @@ public class BookingSoft {
                 if (value == 0) {
                     valid = true;
 
-                // Otherwise must be in the valid range
+                    // Otherwise must be in the valid range
                 } else if (value < min || value > max) {
                     System.out.println("  !! Please enter 0 to go back, or a number between "
                             + min + " and " + max + ".");
@@ -525,20 +455,16 @@ public class BookingSoft {
         return value;
     }
 
-    /**
+    /*
      * Prompts the user to enter a row letter, or '0' to go back.
-     * Returns '0' (char) if the user wants to go back.
-     * Validates that input is a single alphabetic character otherwise.
-     *
-     * @param show The show being booked (used to display the valid row range)
-     * @return The uppercase row letter chosen, or '0' to signal go back
+     * Validates that input is a single alphabetic character.
      */
     private static char readRowLetterWithBack(Show show) {
-        char row  = ' ';
+        char row = ' ';
         boolean valid = false;
 
         char firstRow = 'A';
-        char lastRow  = Venue.rowIndex2Letter(show.getVenue().getNoRows() - 1);
+        char lastRow = Venue.rowIndex2Letter(show.getVenue().getNoRows() - 1);
 
         while (!valid) {
             System.out.print("  Enter row letter (" + firstRow + " to " + lastRow
@@ -568,21 +494,16 @@ public class BookingSoft {
                 continue;
             }
 
-            row   = input.charAt(0);
+            row = input.charAt(0);
             valid = true;
         }
 
         return row;
     }
 
-    /**
+    /*
      * Prompts the user to enter a seat number, or 0 to go back.
      * Returns 0 if the user wants to go back.
-     * Validates that input is a positive integer otherwise.
-     *
-     * @param show    The show being booked
-     * @param maxCols The maximum column number for informational display
-     * @return 0 if user chose to go back, otherwise a positive integer seat number
      */
     private static int readSeatNumberWithBack(Show show, int maxCols) {
         int seatNo = -1;
@@ -605,7 +526,7 @@ public class BookingSoft {
                 if (seatNo == 0) {
                     valid = true;
 
-                // Validation 8: Seat number must be at least 1
+                    // Validation 8: Seat number must be at least 1
                 } else if (seatNo < 1) {
                     System.out.println("  !! Seat number must be at least 1. Enter 0 to go back.");
                 } else {
@@ -621,21 +542,14 @@ public class BookingSoft {
         return seatNo;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    // UTILITY HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
-
-    /**
-     * Counts how many seats in a show's venue are still available (not occupied).
-     *
-     * @param show The show to inspect
-     * @return The number of unoccupied seats remaining
+    /*
+     * Counts how many seats in a show's venue are still available.
      */
     private static int countAvailableSeats(Show show) {
-        Venue v       = show.getVenue();
-        int   rows    = v.getNoRows();
-        int   cols    = v.getNoCols();
-        int   count   = 0;
+        Venue v = show.getVenue();
+        int rows = v.getNoRows();
+        int cols = v.getNoCols();
+        int count = 0;
 
         for (int row = 0; row < rows; row++) {
             for (int col = 1; col <= cols; col++) {
